@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1049970791173",
+    "project_id": "mad-proj-vol-app",
+    "storage_bucket": "mad-proj-vol-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049970791173:android:64d433bfd2f33a6ec3dd6c",
+        "android_client_info": {
+          "package_name": "com.example.mad_flutter_app_vol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1049970791173-188mcqgohn9paf19fpmj63j9v44736k0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAb2jSgKan8a5mCZNd_wN-vU0Bk4mpA_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1049970791173-188mcqgohn9paf19fpmj63j9v44736k0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
