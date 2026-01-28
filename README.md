@@ -1,16 +1,39 @@
-# mad_flutter_app_vol
+# HelpingHand
+<!--project description here-->
 
-A new Flutter project.
+Project for ET0529, Mobile Applications Development, Semester 2 2025.
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Flutter application.
+### Online (MERN)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Software Architecture description
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### File structure and purpose
+The file's purpose is specified in the brackets, and directories are denoted with a trailing slash.
+
+- analysis_options.yaml
+- lib/
+  - main.dart (main script)
+- pubspec.lock
+- pubspec.yaml
+- test (flutter's pre-included testing code)
+
+### Software Details
+The software architecture of this project is described below.
+
+<!--software description here-->
+
+### Firebase/MongoDB implementation
+
+
+### Additional Features
+- FeatureOneNameHere 
+  - Feature description
+  
+- FeatureTwoNameHere
+  - Feature description
+
+- FeatureThreeNameHere
+  - Feature description
