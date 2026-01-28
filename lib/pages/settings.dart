@@ -8,7 +8,6 @@ import 'package:project_1/components/bottomNav.dart';
 import 'package:project_1/components/drawer.dart';
 
 import 'package:project_1/components/appBar.dart';
-import '';
 
 
 class SettingPage extends StatefulWidget {
