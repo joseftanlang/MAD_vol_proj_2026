@@ -49,7 +49,10 @@ class AppBottomNav extends StatelessWidget {
             Navigator.pushNamed(context, '/qrcode');
             break;
           case 3:
-            Navigator.pushNamed(context, '/education');
+            Navigator.pushNamed(context, '/training');
+            break;
+          case 4:
+            Navigator.pushNamed(context, '/donation');
             break;
         }
       },
