@@ -2,6 +2,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:project_1/accessibility_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 
@@ -30,7 +32,11 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const TrainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AccessibilityProvider(),
+      child: const TrainApp(),
+  ));
 }
 
 /* ───────────────────────── APP ROOT ───────────────────────── */
@@ -111,8 +117,33 @@ class _TrainAppState extends State<TrainApp> {
     return MaterialApp(
       navigatorKey: navigatorKey,
       title: 'Train App',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      darkTheme: ThemeData.light(),
+      theme: ThemeData(
+        // colorScheme: Colorsc
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light),
+        sliderTheme: SliderThemeData(
+          activeTrackColor: Colors.amber,
+          inactiveTrackColor: Color.fromRGBO(153, 117, 112, 1),
+          thumbColor: Colors.red,
+          valueIndicatorColor: Color.fromRGBO(153, 117, 112, 1),
+          valueIndicatorTextStyle: const TextStyle(
+            color: Colors.white60,
+          )
+        ),
+        textTheme: AccessibilityProvider.textVariations,
+        ),
+      darkTheme: ThemeData(
+        colorScheme:  ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
+        sliderTheme: SliderThemeData(
+          activeTrackColor: Color.fromRGBO(153, 117, 112, 1),
+          inactiveTrackColor: Colors.amber,
+          thumbColor: Colors.red,
+          valueIndicatorColor: Color.fromRGBO(153, 117, 112, 1),
+          valueIndicatorTextStyle: const TextStyle(
+            color: Colors.white70
+          )
+        ),
+      ),
+      themeMode: Provider.of<AccessibilityProvider>(context).darkMode,
       routes: {
         '/login': (_) => LoginPage(),
         '/settings': (_) => SettingPage(),
