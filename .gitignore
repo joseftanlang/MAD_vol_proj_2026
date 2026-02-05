@@ -43,3 +43,5 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+mad-proj-vol-app-firebase-adminsdk-fbsvc-983816a632.json
