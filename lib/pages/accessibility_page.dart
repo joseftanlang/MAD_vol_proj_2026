@@ -231,6 +231,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
+                                      color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                                 SizedBox(height: 26),
@@ -246,7 +247,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                           return AlertDialog(
                                           title: Text("Edit your font size:"),
                                           content: Container(
-                                            width: 570,
+                                            width: 300,
                                             constraints: BoxConstraints(minHeight: 100),
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
@@ -258,7 +259,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                                     Expanded(
                                                       child: Slider(
                                                       value: _currentSliderValue,
-                                                      max: 5,
+                                                      max: 2,
                                                       min: 1,
                                                       divisions: 4,
                                                       label: _currentSliderValue.round().toString(),
@@ -281,7 +282,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Container(
-                                                  width: 146,
+                                                  width: 106,
                                                   height: 50,
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.only(
@@ -294,10 +295,10 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                                   ),
                                                   child: IconButton(onPressed: () {
                                                     fontSaved = false;
-                                                    if (_currentSliderValue < 2) {
-                                                      _currentSliderValue = 2;
+                                                    if (_currentSliderValue < 1.25) {
+                                                      _currentSliderValue = 1.25;
                                                     }
-                                                    _currentSliderValue -= 1;
+                                                    _currentSliderValue -= 0.25;
                                                     if (fontSize == _currentSliderValue) {
                                                       fontSaved = true;
                                                     }
@@ -305,7 +306,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                                   }, icon: Icon(Icons.remove_circle_outline_sharp)),
                                                 ),
                                                 Container(
-                                                  width: 146,
+                                                  width: 106,
                                                   height: 50,
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.only(
@@ -318,10 +319,10 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                                   ),
                                                   child: IconButton(onPressed: () {
                                                     fontSaved = false;
-                                                    if (_currentSliderValue > 4) {
-                                                      _currentSliderValue = 4;
+                                                    if (_currentSliderValue > 1.75) {
+                                                      _currentSliderValue = 1.75;
                                                     }
-                                                    _currentSliderValue += 1;
+                                                    _currentSliderValue += 0.25;
                                                     if (fontSize == _currentSliderValue) {
                                                       fontSaved = true;
                                                     }
