@@ -118,7 +118,6 @@ class _TrainAppState extends State<TrainApp> {
       navigatorKey: navigatorKey,
       title: 'Train App',
       theme: ThemeData(
-        // colorScheme: Colorsc
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light),
         sliderTheme: SliderThemeData(
           activeTrackColor: Colors.amber,
@@ -129,7 +128,7 @@ class _TrainAppState extends State<TrainApp> {
             color: Colors.white60,
           )
         ),
-        textTheme: AccessibilityProvider.textVariations,
+        textTheme: Provider.of<AccessibilityProvider>(context).textVariations,
         ),
       darkTheme: ThemeData(
         colorScheme:  ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
@@ -142,6 +141,7 @@ class _TrainAppState extends State<TrainApp> {
             color: Colors.white70
           )
         ),
+        textTheme: Provider.of<AccessibilityProvider>(context).textVariations,
       ),
       themeMode: Provider.of<AccessibilityProvider>(context).darkMode,
       routes: {
