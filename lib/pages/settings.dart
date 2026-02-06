@@ -9,7 +9,6 @@ import 'package:project_1/components/drawer.dart';
 
 import 'package:project_1/components/appBar.dart';
 
-
 class SettingPage extends StatefulWidget {
   @override
   _SettingPageState createState() => _SettingPageState();
@@ -38,7 +37,10 @@ class _SettingPageState extends State<SettingPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
     if (!doc.exists) return;
 
     final data = doc.data()!;
@@ -99,7 +101,7 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: const AppAppBar(),
       drawer: const DrawerNav(),
-      
+
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -113,41 +115,116 @@ class _SettingPageState extends State<SettingPage> {
                 border: Border.all(color: Colors.grey),
               ),
               child: _image != null
-                  ? ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.file(_image!, fit: BoxFit.cover))
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.file(_image!, fit: BoxFit.cover),
+                    )
                   : (profileImageUrl != null
-                      ? ClipRRect(borderRadius: BorderRadius.circular(12), child: Image.network(profileImageUrl!, fit: BoxFit.cover))
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.camera_alt, size: 50, color: Colors.grey),
-                            SizedBox(height: 8),
-                            Text('Upload Photo', style: TextStyle(color: Colors.grey)),
-                          ],
-                        )),
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              profileImageUrl!,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.camera_alt,
+                                size: 50,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Upload Photo',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          )),
             ),
           ),
           const SizedBox(height: 16),
-          TextField(controller: usernameController, decoration: const InputDecoration(labelText: 'Username', border: OutlineInputBorder())),
+          TextField(
+            controller: usernameController,
+            decoration: const InputDecoration(
+              labelText: 'Username',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 10),
-          TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Full Name', border: OutlineInputBorder())),
+          TextField(
+            controller: nameController,
+            decoration: const InputDecoration(
+              labelText: 'Full Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 10),
-          TextField(controller: emailController, decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder())),
+          TextField(
+            controller: emailController,
+            decoration: const InputDecoration(
+              labelText: 'Email',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 10),
-          TextField(controller: phoneController, decoration: const InputDecoration(labelText: 'Phone', border: OutlineInputBorder())),
+          TextField(
+            controller: phoneController,
+            decoration: const InputDecoration(
+              labelText: 'Phone',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 10),
-          TextField(controller: addressController, decoration: const InputDecoration(labelText: 'Address', border: OutlineInputBorder())),
+          TextField(
+            controller: addressController,
+            decoration: const InputDecoration(
+              labelText: 'Address',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 10),
-          TextField(controller: bloodTypeController, decoration: const InputDecoration(labelText: 'Blood Type', border: OutlineInputBorder())),
+          TextField(
+            controller: bloodTypeController,
+            decoration: const InputDecoration(
+              labelText: 'Blood Type',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 10),
-          TextField(controller: dobController, decoration: const InputDecoration(labelText: 'Date of Birth', border: OutlineInputBorder())),
+          TextField(
+            controller: dobController,
+            decoration: const InputDecoration(
+              labelText: 'Date of Birth',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 10),
-          TextField(controller: citizenshipController, decoration: const InputDecoration(labelText: 'Citizenship', border: OutlineInputBorder())),
+          TextField(
+            controller: citizenshipController,
+            decoration: const InputDecoration(
+              labelText: 'Citizenship',
+              border: OutlineInputBorder(),
+            ),
+          ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton(onPressed: saveSettings, child: const Text('Save')),
-              ElevatedButton(onPressed: logout, style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text('Logout')),
+              ElevatedButton(
+                onPressed: () async {
+                  await saveSettings();
+                  Navigator.pop(context, nameController.text);
+                  
+                },
+                child: const Text('Save'),
+              ),
+              ElevatedButton(
+                onPressed: logout,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Logout'),
+              ),
             ],
           ),
         ],

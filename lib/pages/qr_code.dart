@@ -8,6 +8,9 @@ import 'package:project_1/components/bottomNav.dart';
 import 'package:project_1/components/drawer.dart';
 import 'package:project_1/components/appBar.dart';
 
+// imported page
+import 'package:project_1/pages/settings.dart';
+
 class QRCodePage extends StatefulWidget {
   const QRCodePage({super.key});
 
@@ -18,6 +21,23 @@ class QRCodePage extends StatefulWidget {
 class _QRCodePageState extends State<QRCodePage> {
   bool showMyQR = true; // toggle between scanner and QR
   String scannedResult = "";
+
+  String userName = "User"; 
+
+  void _openSettings() async {
+    // 1. Wait for the result from SettingPage
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SettingPage()),
+    );
+
+    // 2. Check if the result is a string and not null
+    if (result != null && result is String) {
+      setState(() {
+        userName = result; // Update the name displayed in the UI
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +54,7 @@ class _QRCodePageState extends State<QRCodePage> {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  "Kendric, QR Code", //need to pull name from profile
+                  "$userName, QR Code", //need to pull name from profile
                   style: TextStyle(
                     fontSize: 35.0,
 
