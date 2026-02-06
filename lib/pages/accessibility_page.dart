@@ -14,7 +14,7 @@ class AccessibilityPage extends StatefulWidget {
 class _AccessibilityPageState extends State<AccessibilityPage> {
   // Widget states
   double _currentSliderValue = 1;
-  bool _switchState = true;
+  bool _switchState = false;
   String lang = "English";
   final TextEditingController _searchController = TextEditingController();
   List<String> filteredOptions = [];
@@ -32,7 +32,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
   );
   // Local Firestore data: So that don't need to keep reading from database!!
   static double fontSize = 1;
-  final List<String> allOptions = ['Chinese', 'English', 'Math'];
+  final List<String> allOptions = ['Chinese', 'English', 'Malay'];
   String currentLang = "";
   bool darkMode = false;
   
@@ -109,6 +109,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
           await FirebaseFirestore.instance.collection('accessibility').doc(user.uid).update({
             'darkMode': changedValue,
           });
+          
         case 3:
           await FirebaseFirestore.instance.collection('accessibility').doc(user.uid).update({
             'language': changedValue,
@@ -130,6 +131,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
       appBar: AppBar(
       centerTitle: true,
       backgroundColor: Colors.blueAccent,
+      // This alerts user that they have not saved something!!
       leading: IconButton(onPressed: () {
         if (!fontSaved || !contrastSaved) {
           showDialog(context: context, builder: (context) {
@@ -138,13 +140,23 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
               content: const Text("You have unsaved changes, return to home without saving?"),
               actions: [
                 MaterialButton(onPressed: () {
+                  (darkMode) ?
+                  Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.dark):
+                  Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.light);
                   Navigator.pop(context);
                 },
                 child: const Text("Cancel"),
-                
+                ),
+                ElevatedButton(onPressed: () {
+                  fontSaved = true;
+                  contrastSaved = true;
+                  Navigator.pushNamed(context, "/home");
+                },
+                child: const Text("Don't Save"),
                 ),
                 FilledButton(onPressed: () {
                   fontSize = _currentSliderValue;
+                  darkMode = _switchState;
                   if (!fontSaved || !contrastSaved) {
                     updateUserAccessibility(4, [_currentSliderValue, _switchState]);
                   } else if (!contrastSaved) {
@@ -206,8 +218,8 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                         spacing: 10,
                         children: [
                           Container(
-                            height: 435,
                             width: 350,
+                            constraints: BoxConstraints(minHeight: 300),
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               // color: Colors.white70,
@@ -224,41 +236,215 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                   ),
                                 ),
                                 SizedBox(height: 26),
-                                Slider(
-                                    value: _currentSliderValue,
-                                    max: 5,
-                                    min: 1,
-                                    divisions: 4,
-                                    label: _currentSliderValue.round().toString(),
-                                    onChanged: (value) {
-                                      fontSaved = false;
-                                      if (fontSize == value) {
-                                        fontSaved = true;
-                                      }
-                                      setState(() {
-                                        _currentSliderValue = value;
+                                Text("Current settings:", style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                  color: Colors.grey
+                                )),
+                                SizedBox(height: 16),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(context: context, builder: (context) {
+                                      return StatefulBuilder(
+                                        builder: (context, setDialogStateAgain) {
+                                          return AlertDialog(
+                                          title: Text("Edit your font size:"),
+                                          content: Container(
+                                            width: 570,
+                                            constraints: BoxConstraints(minHeight: 300),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text("A", style: TextStyle(fontSize: 16),),
+                                                    Expanded(
+                                                      child: Slider(
+                                                      value: _currentSliderValue,
+                                                      max: 5,
+                                                      min: 1,
+                                                      divisions: 4,
+                                                      label: _currentSliderValue.round().toString(),
+                                                      onChanged: (value) {
+                                                        fontSaved = false;
+                                                        if (fontSize == value) {
+                                                          fontSaved = true;
+                                                        }
+                                                        setState(() {
+                                                          _currentSliderValue = value;
+                                                        setDialogStateAgain(() {});
+                                                      });
+                                                      },
+                                                                                                        ),
+                                                    ),
+                                                  Text("A", style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),),
+                                                  ],
+                                                ),
+                                            SizedBox(height: 10,),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                  width: 146,
+                                                  height: 50,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(
+                                                      topLeft: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10),
+                                                      topRight  : Radius.circular(0),
+                                                      bottomRight: Radius.circular(0),
+                                                    ),
+                                                    border: Border.all(color: Colors.blueGrey, width: 4)
+                                                  ),
+                                                  child: IconButton(onPressed: () {
+                                                    fontSaved = false;
+                                                    if (fontSize == _currentSliderValue) {
+                                                      fontSaved = true;
+                                                    }
+                                                    setState(() {
+                                                        _currentSliderValue -= 1;
+                                                      setDialogStateAgain(() {});
+                                                    });
+                                                  }, icon: Icon(Icons.remove_circle_outline_sharp)),
+                                                ),
+                                                Container(
+                                                  width: 146,
+                                                  height: 50,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(
+                                                      topLeft: Radius.circular(0),
+                                                      bottomLeft: Radius.circular(0),
+                                                      topRight  : Radius.circular(10),
+                                                      bottomRight: Radius.circular(10),
+                                                    ),
+                                                    border: Border.all(color: Colors.blueGrey, width: 4)
+                                                  ),
+                                                  child: IconButton(onPressed: () {
+                                                    fontSaved = false;
+                                                    if (fontSize != _currentSliderValue) {
+                                                      fontSaved = true;
+                                                    }
+                                                    setState(() {
+                                                        _currentSliderValue += 1;
+                                                      setDialogStateAgain(() {});
+                                                    });
+                                                  }, icon: Icon(Icons.add_circle_outline_sharp)),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 10,),
+                                            FilledButton(onPressed: () {
+                                              if (fontSize != _currentSliderValue) {   
+                                                Provider.of<AccessibilityProvider>(context, listen: false).changeFontSize(_currentSliderValue);
+                                                updateUserAccessibility(1, _currentSliderValue);
+                                                fontSize = _currentSliderValue;
+                                                ScaffoldMessenger.of(context).showSnackBar(savedSnackBar);
+                                                setState(() {
+                                                  fontSaved = true;
+                                                });
+                                              } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(nothingSavedSnackBar);
+                                              }
+                                            }, child: Text("Save")),
+                                            
+                                            SizedBox(height: 16,),
+                                            Text(
+                                              "Example of body",
+                                              style: TextStyle(fontSize: _currentSliderValue * 16),
+                                            ),
+                                            SizedBox(height: 6,),
+                                            (fontSaved) ? Text("No unsaved changes", style: TextStyle(color: Colors.grey, fontSize: 16),) : Text("Press save to save changes!", style: TextStyle(color: Colors.grey, fontSize: 16),),
+                                              ],
+                                            ),
+                                          ),
+                                          
+                                          actions: [
+                                            MaterialButton(onPressed: () {
+                                              _searchController.clear();
+                                              filteredOptions = allOptions;
+                                              lang = currentLang;
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text("Cancel"),
+                                            
+                                            ),
+                                            // Save button only works if user selected a different selection!!
+                                            FilledButton(onPressed: (fontSize != _currentSliderValue) ? () {
+                                              Provider.of<AccessibilityProvider>(context, listen: false).changeFontSize(_currentSliderValue);
+                                              updateUserAccessibility(1, _currentSliderValue);
+                                              fontSize = _currentSliderValue;
+                                              ScaffoldMessenger.of(context).showSnackBar(savedSnackBar);
+                                              setState(() {
+                                                fontSaved = true;
+                                              });
+                                              Navigator.pop(context);
+                                            } : null, child: const Text("Save"),),
+                                          ],
+                                        );
+                                        },
+                                      );
                                     });
                                   },
+                                  child: Container(
+                                    width: 260,
+                                    padding: EdgeInsets.all(6),
+                                    constraints: BoxConstraints(minHeight: 60),
+                                    decoration: BoxDecoration(
+                                      // color: Colors.white70,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: Colors.purple, width: 3),
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("Title", style: Theme.of(context).textTheme.headlineMedium),
+                                        Text("Subtitle", style: Theme.of(context).textTheme.titleMedium),
+                                        Text("Body text", style: Theme.of(context).textTheme.bodyMedium),
+                                        SizedBox(height: 6,),
+                                        Text("Tap this box to change", style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                          color: Colors.blueGrey
+                                        )),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                FilledButton(onPressed: () {
-                                  if (fontSize != _currentSliderValue) {
-                                    updateUserAccessibility(1, _currentSliderValue);
-                                    fontSize = _currentSliderValue;
-                                    ScaffoldMessenger.of(context).showSnackBar(savedSnackBar);
-                                    setState(() {
-                                      fontSaved = true;
-                                    });
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(nothingSavedSnackBar);
-                                  }
-                                }, child: Text("Save")),
-                                SizedBox(height: 6,),
-                                (fontSaved) ? Text("No unsaved changes", style: TextStyle(color: Colors.grey, fontSize: 16),) : Text("Press save to save changes!", style: TextStyle(color: Colors.grey, fontSize: 16),),
-                                SizedBox(height: 16,),
-                                Text(
-                                  "Example of body",
-                                  style: TextStyle(fontSize: _currentSliderValue * 16),
-                                ),
+                                
+                                // Slider(
+                                //     value: _currentSliderValue,
+                                //     max: 5,
+                                //     min: 1,
+                                //     divisions: 4,
+                                //     label: _currentSliderValue.round().toString(),
+                                //     onChanged: (value) {
+                                //       fontSaved = false;
+                                //       if (fontSize == value) {
+                                //         fontSaved = true;
+                                //       }
+                                //       setState(() {
+                                //         _currentSliderValue = value;
+                                //     });
+                                //   },
+                                // ),
+                                // FilledButton(onPressed: () {
+                                //   if (fontSize != _currentSliderValue) {   
+                                //     Provider.of<AccessibilityProvider>(context, listen: false).changeFontSize(_currentSliderValue);
+                                //     updateUserAccessibility(1, _currentSliderValue);
+                                //     fontSize = _currentSliderValue;
+                                //     ScaffoldMessenger.of(context).showSnackBar(savedSnackBar);
+                                //     setState(() {
+                                //       fontSaved = true;
+                                //     });
+                                //   } else {
+                                //     ScaffoldMessenger.of(context).showSnackBar(nothingSavedSnackBar);
+                                //   }
+                                // }, child: Text("Save")),
+                                // SizedBox(height: 6,),
+                                // (fontSaved) ? Text("No unsaved changes", style: TextStyle(color: Colors.grey, fontSize: 16),) : Text("Press save to save changes!", style: TextStyle(color: Colors.grey, fontSize: 16),),
+                                // SizedBox(height: 16,),
+                                // Text(
+                                //   "Example of body",
+                                //   style: TextStyle(fontSize: _currentSliderValue * 16),
+                                // ),
                                 
                               ],
                             ),
@@ -295,11 +481,9 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                       setState(() {
                                         _switchState = value;
                                       });
-                                      if (value) {
-                                        Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.dark);
-                                      } else {
-                                        Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.light);
-                                      }
+                                      (value) ?
+                                      Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.dark):
+                                      Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.light);
                                     }),
                                     Icon(Icons.dark_mode_sharp),
                                   ],
@@ -307,6 +491,9 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                 FilledButton(onPressed: () {
                                   if (darkMode != _switchState) {
                                     updateUserAccessibility(2, _switchState);
+                                    (_switchState) ?
+                                      Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.dark):
+                                      Provider.of<AccessibilityProvider>(context, listen: false).changeContrast(ThemeMode.light);
                                     darkMode = _switchState;
                                     setState(() {
                                       contrastSaved = true;
@@ -437,6 +624,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 20,)
               ],
             ),
           ),
