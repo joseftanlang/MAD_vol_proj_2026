@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 // Use provider version: ^6.1.2
 // Use shared_preferences: ^2.3.2
 class AccessibilityProvider extends ChangeNotifier {
-  
+  static bool accessibilitySynced = false;
+  static Map<String, dynamic> data = {};
   TextTheme _textVariations = TextTheme(
     bodyMedium: TextStyle(
       fontSize: 16,
@@ -12,7 +13,7 @@ class AccessibilityProvider extends ChangeNotifier {
       fontWeight: FontWeight.bold
     ),
     headlineMedium: TextStyle(
-      fontSize: 16+8,
+      fontSize: 16+24,
       fontWeight: FontWeight.bold
     ),
   );
@@ -23,11 +24,11 @@ class AccessibilityProvider extends ChangeNotifier {
         fontSize: 16*changedValue,
       ),
       titleMedium: TextStyle(
-        fontSize: (16+4)*changedValue,
+        fontSize: 16*changedValue+4,
         fontWeight: FontWeight.bold
       ),
       headlineMedium: TextStyle(
-        fontSize: (16+8)*changedValue,
+        fontSize: 16*changedValue+24,
         fontWeight: FontWeight.bold
       ),
     );
@@ -39,6 +40,13 @@ class AccessibilityProvider extends ChangeNotifier {
   // Function to change app contrast!!
   void changeContrast(ThemeMode changedValue) {
     _darkMode = changedValue;
+    notifyListeners();
+  }
+  Locale _language = Locale('en');
+  Locale get language => _language;
+  // Function to change language!
+  void changeLanguage(Locale changedValue) {
+    _language = changedValue;
     notifyListeners();
   }
 }

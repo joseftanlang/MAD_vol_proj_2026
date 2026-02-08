@@ -1,0 +1,148 @@
+{
+  "@@locale": "zh",
+
+  "accessibilityEditPreference": "编辑用户偏好",
+  "fontSizeTitle": "字体大小（默认：1）",
+  "currentSettings": "当前设置：",
+  "editFontSize": "编辑字体大小：",
+  "exampleBody": "正文示例",
+  "noUnsavedChanges": "没有未保存的更改",
+  "pressSaveChanges": "请点击保存以保存更改！",
+
+  "previewTitle": "标题",
+  "previewSubtitle": "副标题",
+  "previewBodyText": "正文内容",
+  "tapBoxToChange": "点击此框进行更改",
+
+  "appContrast": "应用对比度",
+
+  "preferredLanguage": "首选语言：",
+  "currentLanguage": "当前：{language}",
+  "@currentLanguage": {
+    "placeholders": {
+      "language": {}
+    }
+  },
+
+  "selectLanguage": "选择语言",
+  "searchLanguage": "搜索语言...",
+  "changeLanguageButton": "点击更改！",
+
+  "saveChangesDialogTitle": "保存您的更改？",
+  "saveChangesDialogContent": "您有未保存的更改，是否返回主页且不保存？",
+
+  "cancel": "取消",
+  "save": "保存",
+  "dontSave": "不保存",
+
+  "savedSuccessfully": "项目已成功保存",
+  "nothingToSave": "没有内容可保存！！",
+
+  "english": "英语",
+  "chinese": "中文",
+
+  "welcomeDefault": "欢迎来到SP！",
+  "welcomeBack": "欢迎回来，{username}！",
+  "@welcomeBack": {
+    "placeholders": {
+      "username": {}
+    }
+  },
+
+  "welcomeLoadError": "加载欢迎信息时出错",
+
+  "searchOpportunities": "搜索机会",
+
+  "noMatchingPage": "没有匹配的页面：\"{spokenText}\"",
+  "@noMatchingPage": {
+    "placeholders": {
+      "spokenText": {}
+    }
+  },
+  "categoryVolunteer": "志愿服务",
+  "categoryTraining": "培训",
+  "categoryDonation": "捐赠",
+  "categoryAboutUs": "关于我们",
+  "categoryAccessibility": "辅助功能",
+  "categoryLegalService": "法律服务",
+  "categoryQrCode": "二维码",
+  "categoryLogout": "登出",
+  "categorySettings": "设置",
+  "categoryChatbot": "聊天机器人",
+  "bottomNavHome": "主页",
+  "bottomNavVolunteer": "志愿服务",
+  "bottomNavQrCode": "二维码",
+  "bottomNavEducation": "教育",
+  "bottomNavDonation": "捐赠",
+  "drawerHeader": "导航菜单",
+  "drawerHome": "主页",
+  "drawerAboutUs": "关于我们",
+  "drawerVolunteer": "志愿服务",
+  "drawerTraining": "培训",
+  "drawerLegal": "法律",
+  "drawerDonation": "捐赠",
+  "drawerQrCode": "二维码",
+  "drawerSettings": "设置",
+  "drawerAccessibility": "辅助功能",
+  "drawerChatbot": "聊天机器人",
+  "drawerLogout": "登出",
+  "drawerLocationTracker": "位置追踪",
+  "aboutUsTitle": "关于我们",
+  "aboutUsDescription": "欢迎使用列车应用程序！我们致力于为您的列车出行提供最佳体验。我们的应用程序提供一系列功能，包括订票、实时列车时刻表和出行更新，以确保顺利的旅程。",
+  "contactUsButton": "联系我们",
+  "feedbackButton": "反馈",
+  "callLabel": "电话: +65 88454281",
+  "emailLabel": "电子邮件: tanjosef03@gmail.com",
+  "sendFeedbackTitle": "发送反馈",
+  "sendFeedbackHint": "在此输入您的反馈...",
+  "sendButton": "发送",
+  "donationTitle": "您今天想支持什么？",
+  "categoryAll": "所有",
+  "categoryChildren": "儿童",
+  "categoryElderly": "老人",
+  "categoryEnvironment": "环境",
+  "categoryEducation": "教育",
+  "categoryHealth": "健康",
+  "categoryMigrants": "移民",
+  "donationListEmpty": "未找到捐赠项目",
+  "donationListError": "出现错误",
+  "donationSelectAmount": "选择捐款金额",
+  "donationButtonSelectAmount": "请选择金额以继续",
+  "donationSuccessMessage": "捐款成功 ❤️",
+  "settingsUploadPhoto": "上传照片",
+  "settingsUsername": "用户名",
+  "settingsFullName": "姓名",
+  "settingsEmail": "电子邮件",
+  "settingsPhone": "电话",
+  "settingsAddress": "地址",
+  "settingsBloodType": "血型",
+  "settingsDateOfBirth": "出生日期",
+  "settingsCitizenship": "国籍",
+  "settingsSavedSuccess": "设置已成功保存",
+  "settingsSaveButton": "保存",
+  "settingsLogoutButton": "登出",
+  "volunteerImpactToday": "今天你想如何做出贡献？",
+  "volunteerFeatured": "精选活动",
+  "volunteerCategoryHeader": "类别",
+  "volunteerThankYou": "感谢您的志愿服务！",
+  "urlErrorTitle": "错误",
+  "urlErrorMessage": "跳转失败，请重试。",
+  "trainingWhatLearnToday": "今天您想学习什么？",
+  "qrUniqueMessage": "此二维码是您的专属二维码",
+  "qrCodeLabel": "二维码",
+  "qrScannerLabel": "二维码扫描器",
+  "scanQrButton": "扫描二维码",
+  "qrImageButton": "二维码图像",
+  "welcomeBack": "欢迎回来，{username}！",
+  "@welcomeBack": {
+    "placeholders": {
+      "username": {}
+    }
+  },
+  "scannedResultLabel": "扫描结果：{result}",
+  "@scannedResultLabel": {
+    "placeholders": {
+      "result": {}
+    }
+  }
+}

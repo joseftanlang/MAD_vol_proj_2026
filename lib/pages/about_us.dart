@@ -3,6 +3,7 @@ import 'package:final_project_flutter/components/appBar.dart';
 import 'package:final_project_flutter/components/drawer.dart';
 import 'package:final_project_flutter/components/bottomNav.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:final_project_flutter/l10n/app_localizations.dart';
 
 class AboutUsPage extends StatefulWidget {
   const AboutUsPage({super.key});
@@ -52,7 +53,7 @@ class _AboutUsPageState extends State<AboutUsPage>
         children: [
           ListTile(
             leading: const Icon(Icons.phone),
-            title: const Text('Call: +65 88454281'),
+            title: Text(AppLocalizations.of(context)!.callLabel, style: Theme.of(context).textTheme.titleMedium,),
             onTap: () async {
               final Uri phoneUri = Uri(scheme: 'tel', path: '+65 88454281');
               if (await canLaunchUrl(phoneUri)) {
@@ -63,7 +64,7 @@ class _AboutUsPageState extends State<AboutUsPage>
           ),
           ListTile(
             leading: const Icon(Icons.email),
-            title: const Text('Email: tanjosef03@gmail.com'),
+            title: Text(AppLocalizations.of(context)!.emailLabel, style: Theme.of(context).textTheme.bodyMedium,),
             onTap: () async {
               final Uri emailUri = Uri(
                 scheme: 'mailto',
@@ -96,17 +97,18 @@ class _AboutUsPageState extends State<AboutUsPage>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Send Feedback',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                AppLocalizations.of(context)!.sendFeedbackTitle,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: feedbackController,
                 maxLines: 5,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Type your feedback here...',
+                  hintText: AppLocalizations.of(context)!.sendFeedbackHint,
+                  hintStyle: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
               const SizedBox(height: 12),
@@ -126,7 +128,7 @@ class _AboutUsPageState extends State<AboutUsPage>
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Send'),
+                child: Text(AppLocalizations.of(context)!.sendButton, style: Theme.of(context).textTheme.bodyMedium,),
               ),
             ],
           ),
@@ -198,13 +200,11 @@ class _AboutUsPageState extends State<AboutUsPage>
                         elevation: 6,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: const Text(
-                            'About Us',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+                          child: Text(
+                            AppLocalizations.of(context)!.aboutUsTitle,
+                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: Colors.black87
+                              ),
                           ),
                         ),
                       ),
@@ -227,10 +227,11 @@ class _AboutUsPageState extends State<AboutUsPage>
                         elevation: 4,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: const Text(
-                            'Welcome to the Train App! We are dedicated to providing you with the best experience for all your train travel needs. '
-                            'Our app offers a range of features including ticket booking, real-time train schedules, and travel updates to ensure a smooth journey.',
-                            style: TextStyle(fontSize: 16, color: Colors.black87),
+                          child: Text(
+                            AppLocalizations.of(context)!.aboutUsDescription,
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: Colors.black87
+                            ),
                           ),
                         ),
                       ),
@@ -245,7 +246,7 @@ class _AboutUsPageState extends State<AboutUsPage>
                     ElevatedButton.icon(
                       onPressed: _showContactOptions,
                       icon: const Icon(Icons.phone),
-                      label: const Text('Contact Us'),
+                      label: Text(AppLocalizations.of(context)!.contactUsButton, style: Theme.of(context).textTheme.bodyMedium,),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blueAccent,
                         shape: RoundedRectangleBorder(
@@ -258,7 +259,7 @@ class _AboutUsPageState extends State<AboutUsPage>
                     ElevatedButton.icon(
                       onPressed: _showFeedbackDialog,
                       icon: const Icon(Icons.feedback),
-                      label: const Text('Feedback'),
+                      label: Text(AppLocalizations.of(context)!.feedbackButton, style: Theme.of(context).textTheme.bodyMedium,),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.purpleAccent,
                         shape: RoundedRectangleBorder(

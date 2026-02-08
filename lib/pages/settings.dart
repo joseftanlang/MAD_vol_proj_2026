@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:final_project_flutter/components/bottomNav.dart';
 import 'package:final_project_flutter/components/drawer.dart';
 import 'package:final_project_flutter/components/appBar.dart';
+import 'package:final_project_flutter/l10n/app_localizations.dart';
+
 
 class SettingPage extends StatefulWidget {
   @override
@@ -86,7 +88,7 @@ class _SettingPageState extends State<SettingPage> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Settings saved successfully')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.settingsSavedSuccess, style: Theme.of(context).textTheme.bodyMedium,)),
     );
   }
 
@@ -139,16 +141,18 @@ class _SettingPageState extends State<SettingPage> {
                           )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(
+                            children: [
+                              const Icon(
                                 Icons.camera_alt,
                                 size: 50,
                                 color: Colors.grey,
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Text(
-                                'Upload Photo',
-                                style: TextStyle(color: Colors.grey),
+                                AppLocalizations.of(context)!.settingsUploadPhoto,
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                  color: Colors.grey
+                                ),
                               ),
                             ],
                           )),
@@ -157,48 +161,54 @@ class _SettingPageState extends State<SettingPage> {
           const SizedBox(height: 16),
           TextField(
             controller: usernameController,
-            decoration: const InputDecoration(
-              labelText: 'Username',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.settingsUsername,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: nameController,
-            decoration: const InputDecoration(
-              labelText: 'Full Name',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.settingsFullName,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.settingsEmail,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: phoneController,
-            decoration: const InputDecoration(
-              labelText: 'Phone',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.settingsPhone,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: addressController,
-            decoration: const InputDecoration(
-              labelText: 'Address',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.settingsAddress,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 10),
           TextField(
             controller: bloodTypeController,
             decoration: InputDecoration(
-              labelText: 'Blood Type',
+              labelText: AppLocalizations.of(context)!.settingsBloodType,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
               border: OutlineInputBorder(),
               suffixIcon: IconButton(
                 icon: Icon(Icons.arrow_drop_down),
@@ -229,9 +239,10 @@ class _SettingPageState extends State<SettingPage> {
           const SizedBox(height: 10),
           TextField(
             controller: dobController,
-            decoration: const InputDecoration(
-              labelText: 'Date of Birth',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.settingsDateOfBirth,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              border: const OutlineInputBorder(),
             ),
             readOnly: true, // prevent manual editing
             onTap: () async {
@@ -253,9 +264,10 @@ class _SettingPageState extends State<SettingPage> {
           const SizedBox(height: 10),
           TextField(
             controller: citizenshipController,
-            decoration: const InputDecoration(
-              labelText: 'Citizenship',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.settingsCitizenship,
+              labelStyle: Theme.of(context).textTheme.bodyMedium,
+              border: const OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 20),
@@ -264,12 +276,12 @@ class _SettingPageState extends State<SettingPage> {
             children: [
               ElevatedButton(
                 onPressed: saveSettings,
-                child: const Text('Save'),
+                child: Text(AppLocalizations.of(context)!.settingsSaveButton, style: Theme.of(context).textTheme.bodyMedium,),
               ),
               ElevatedButton(
                 onPressed: logout,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text('Logout'),
+                child: Text(AppLocalizations.of(context)!.settingsLogoutButton, style: Theme.of(context).textTheme.bodyMedium,),
               ),
             ],
           ),

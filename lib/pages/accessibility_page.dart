@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_flutter/accessibility_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:final_project_flutter/l10n/app_localizations.dart';
 
 class AccessibilityPage extends StatefulWidget {
   const AccessibilityPage({super.key});
@@ -34,7 +35,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
   );
   // Local Firestore data: So that don't need to keep reading from database!!
   static double fontSize = 1;
-  final List<String> allOptions = ['Chinese', 'English', 'Malay'];
+  final List<String> allOptions = ['English', 'Chinese'];
   String currentLang = "";
   bool darkMode = false;
 
@@ -72,38 +73,51 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
     // Used a powerful firestore method: .set() which creates if field not found and updates if field is found
     if (user != null) {
       try {
-        DocumentSnapshot doc = await FirebaseFirestore.instance
-            .collection('accessibility')
-            .doc(user.uid)
-            .get();
-        Map<String, dynamic> data = {
-          'fontSize': 1,
-          'darkMode': false,
-          'language': 'English',
-        };
-        // If document don't exist, create user document as default settings first!!
-        if (!doc.exists) {
-          // .set() is used here instead of .add() to give document an unique ID
-          await FirebaseFirestore.instance
+        if (!AccessibilityProvider.accessibilitySynced) {
+          DocumentSnapshot doc = await FirebaseFirestore.instance
               .collection('accessibility')
               .doc(user.uid)
-              .set(data);
+              .get();
+          Map<String, dynamic> data = {
+            'fontSize': 1,
+            'darkMode': false,
+            'language': 'English',
+          };
+
+          // If document don't exist, create user document as default settings first!!
+          if (!doc.exists) {
+            // .set() is used here instead of .add() to give document an unique ID
+            await FirebaseFirestore.instance
+                .collection('accessibility')
+                .doc(user.uid)
+                .set(data);
+          } else {
+            data =
+                doc.data()
+                    as Map<
+                      String,
+                      dynamic
+                    >; // Only if document is found use it, if not stick to default!!
+          }
+          setState(() {
+            currentLang = data["language"];
+            _switchState = data["darkMode"];
+            _currentSliderValue = data["fontSize"];
+          });
+          lang = data["language"];
+          darkMode = data["darkMode"];
+          fontSize = data["fontSize"];
         } else {
-          data =
-              doc.data()
-                  as Map<
-                    String,
-                    dynamic
-                  >; // Only if document is found use it, if not stick to default!!
+          Map<String, dynamic> data = AccessibilityProvider.data;
+          setState(() {
+            currentLang = data["language"];
+            _switchState = data["darkMode"];
+            _currentSliderValue = data["fontSize"];
+          });
+          lang = data["language"];
+          darkMode = data["darkMode"];
+          fontSize = data["fontSize"];
         }
-        setState(() {
-          currentLang = data["language"];
-          _switchState = data["darkMode"];
-          _currentSliderValue = data["fontSize"];
-        });
-        lang = data["language"];
-        darkMode = data["darkMode"];
-        fontSize = data["fontSize"];
       } catch (err) {
         print("Document not made yet!!");
       }
@@ -120,6 +134,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
     if (user != null) {
       switch (type) {
         case 1:
+          AccessibilityProvider.data["fontSize"] = changedValue;
           await FirebaseFirestore.instance
               .collection('accessibility')
               .doc(user.uid)
@@ -127,17 +142,21 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                 'fontSize': changedValue,
               }); // Setoptions ensures it only updates field mentioned!!
         case 2:
+        AccessibilityProvider.data["darkMode"] = changedValue;
           await FirebaseFirestore.instance
               .collection('accessibility')
               .doc(user.uid)
               .update({'darkMode': changedValue});
 
         case 3:
+        AccessibilityProvider.data["language"] = changedValue;
           await FirebaseFirestore.instance
               .collection('accessibility')
               .doc(user.uid)
               .update({'language': changedValue});
         case 4:
+          AccessibilityProvider.data["fontSize"] = changedValue[0];
+          AccessibilityProvider.data["darkMode"] = changedValue[1];
           await FirebaseFirestore.instance
               .collection('accessibility')
               .doc(user.uid)
@@ -165,16 +184,16 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: const Text("Save your changes?"),
-                    content: const Text(
-                      "You have unsaved changes, return to home without saving?",
+                    title: Text(AppLocalizations.of(context)!.saveChangesDialogTitle, style: Theme.of(context).textTheme.titleMedium,),
+                    content: Text(
+                      AppLocalizations.of(context)!.saveChangesDialogContent, style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     actions: [
                       MaterialButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: const Text("Cancel"),
+                        child: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyMedium,),
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -182,7 +201,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                           contrastSaved = true;
                           Navigator.pushNamed(context, "/home");
                         },
-                        child: const Text("Don't Save"),
+                        child: Text(AppLocalizations.of(context)!.dontSave, style: Theme.of(context).textTheme.bodyMedium,),
                       ),
                       FilledButton(
                         onPressed: () {
@@ -202,7 +221,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                           contrastSaved = true;
                           Navigator.pushNamed(context, "/home");
                         },
-                        child: const Text("Save"),
+                        child: Text(AppLocalizations.of(context)!.save, style: Theme.of(context).textTheme.bodyMedium,),
                       ),
                     ],
                   );
@@ -217,7 +236,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
         title: SizedBox(
           height: 40,
           child: Image.asset(
-            '../../lib/assets/Singapore_poly.png',
+            'assets/Singapore_poly.png',
             fit: BoxFit.contain,
           ),
         ),
@@ -246,9 +265,10 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
             spacing: 20,
             children: [
               SizedBox(height: 10),
+              
               Text(
-                "Edit user preference",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                AppLocalizations.of(context)!.accessibilityEditPreference,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               SizedBox(height: 36),
               Column(
@@ -268,14 +288,14 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                     child: Column(
                       children: [
                         Text(
-                          "Font Size (Default: 1)",
+                          AppLocalizations.of(context)!.fontSizeTitle,
                           style: Theme.of(
                             context,
                           ).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                         ),
                         SizedBox(height: 26),
                         Text(
-                          "Current settings:",
+                          AppLocalizations.of(context)!.currentSettings,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium!.copyWith(color: Colors.grey),
@@ -289,7 +309,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                 return StatefulBuilder(
                                   builder: (context, setDialogStateAgain) {
                                     return AlertDialog(
-                                      title: Text("Edit your font size:"),
+                                      title: Text(AppLocalizations.of(context)!.editFontSize, style: Theme.of(context).textTheme.titleMedium,),
                                       content: Container(
                                         width: 300,
                                         constraints: BoxConstraints(
@@ -314,9 +334,9 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                                     max: 2,
                                                     min: 1,
                                                     divisions: 4,
-                                                    label: _currentSliderValue
-                                                        .round()
-                                                        .toString(),
+                                                    // label: _currentSliderValue
+                                                    //     .round()
+                                                    //     .toString(),
                                                     onChanged: (value) {
                                                       fontSaved = false;
                                                       if (fontSize == value) {
@@ -455,7 +475,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
 
                                             SizedBox(height: 16),
                                             Text(
-                                              "Example of body",
+                                              AppLocalizations.of(context)!.exampleBody,
                                               style: TextStyle(
                                                 fontSize:
                                                     _currentSliderValue * 16,
@@ -464,17 +484,15 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                             SizedBox(height: 6),
                                             (fontSaved)
                                                 ? Text(
-                                                    "No unsaved changes",
-                                                    style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 16,
+                                                    AppLocalizations.of(context)!.noUnsavedChanges,
+                                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                      color: Colors.grey
                                                     ),
                                                   )
                                                 : Text(
-                                                    "Press save to save changes!",
-                                                    style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 16,
+                                                    AppLocalizations.of(context)!.pressSaveChanges,
+                                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                      color: Colors.grey
                                                     ),
                                                   ),
                                           ],
@@ -489,7 +507,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                             lang = currentLang;
                                             Navigator.pop(context);
                                           },
-                                          child: const Text("Cancel"),
+                                          child: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyMedium,),
                                         ),
                                         // Save button only works if user selected a different selection!!
                                         FilledButton(
@@ -515,7 +533,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                                   Navigator.pop(context);
                                                 }
                                               : null,
-                                          child: const Text("Save"),
+                                          child: Text(AppLocalizations.of(context)!.save, style: Theme.of(context).textTheme.bodyMedium,),
                                         ),
                                       ],
                                     );
@@ -540,24 +558,24 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "Title",
+                                  AppLocalizations.of(context)!.previewTitle,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.headlineMedium,
                                 ),
                                 Text(
-                                  "Subtitle",
+                                  AppLocalizations.of(context)!.previewSubtitle,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.titleMedium,
                                 ),
                                 Text(
-                                  "Body text",
+                                  AppLocalizations.of(context)!.previewBodyText,
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                                 SizedBox(height: 6),
                                 Text(
-                                  "Tap this box to change",
+                                  AppLocalizations.of(context)!.tapBoxToChange,
                                   style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(color: Colors.blueGrey),
                                 ),
@@ -581,11 +599,8 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                       spacing: 16,
                       children: [
                         Text(
-                          "App contrast",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                          AppLocalizations.of(context)!.appContrast,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -642,21 +657,19 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                               ).showSnackBar(nothingSavedSnackBar);
                             }
                           },
-                          child: Text("Save"),
+                          child: Text(AppLocalizations.of(context)!.save, style: Theme.of(context).textTheme.bodyMedium,),
                         ),
                         (contrastSaved)
                             ? Text(
-                                "No unsaved changes",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
+                                AppLocalizations.of(context)!.noUnsavedChanges,
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                  color: Colors.grey
                                 ),
                               )
                             : Text(
-                                "Press save to save changes!",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
+                                AppLocalizations.of(context)!.pressSaveChanges,
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                  color: Colors.grey
                                 ),
                               ),
                       ],
@@ -680,19 +693,15 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                   spacing: 10,
                   children: [
                     Text(
-                      "Preferred language:",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
+                      AppLocalizations.of(context)!.preferredLanguage,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     SizedBox(height: 5),
                     Text(
-                      "Current: $currentLang",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
+                      AppLocalizations.of(context)!.currentLanguage((currentLang == "English")
+                        ? AppLocalizations.of(context)!.english
+                        : AppLocalizations.of(context)!.chinese),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     SizedBox(height: 10),
                     FilledButton(
@@ -706,7 +715,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                             return StatefulBuilder(
                               builder: (context, setDialogState) {
                                 return AlertDialog(
-                                  title: Text("Select a language"),
+                                  title: Text(AppLocalizations.of(context)!.selectLanguage, style: Theme.of(context).textTheme.titleMedium,),
                                   content: SizedBox(
                                     width: double.maxFinite,
                                     child: Column(
@@ -715,7 +724,8 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                         TextField(
                                           controller: _searchController,
                                           decoration: InputDecoration(
-                                            hintText: 'Search a language...',
+                                            hintText: AppLocalizations.of(context)!.searchLanguage,
+                                            hintStyle: Theme.of(context).textTheme.bodyMedium,
                                             prefixIcon: const Icon(
                                               Icons.search_sharp,
                                             ),
@@ -725,10 +735,8 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                                     .isNotEmpty)
                                                 ? IconButton(
                                                     onPressed: () {
-                                                      setState(() {
-                                                        filteredOptions =
-                                                            allOptions;
-                                                      });
+                                                      filteredOptions = allOptions;
+                                                      setDialogState(() {});
                                                       _searchController.clear();
                                                     },
                                                     icon: const Icon(
@@ -752,7 +760,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                             itemBuilder: (context, index) {
                                               return ListTile(
                                                 title: Text(
-                                                  filteredOptions[index],
+                                                  (filteredOptions[index] == "English" ? "English" : "中文") ,
                                                 ),
                                                 trailing:
                                                     (filteredOptions[index] ==
@@ -788,13 +796,14 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                         lang = currentLang;
                                         Navigator.pop(context);
                                       },
-                                      child: const Text("Cancel"),
+                                      child: Text(AppLocalizations.of(context)!.cancel, style: Theme.of(context).textTheme.bodyMedium,),
                                     ),
                                     // Save button only works if user selected a different selection!!
                                     FilledButton(
                                       onPressed: (currentLang != lang)
                                           ? () {
                                               updateUserAccessibility(3, lang);
+                                              (currentLang != "English") ? Provider.of<AccessibilityProvider>(context,listen: false,).changeLanguage(Locale('en')): Provider.of<AccessibilityProvider>(context,listen: false,).changeLanguage(Locale('zh'));
                                               setState(() {
                                                 currentLang = lang;
                                               });
@@ -804,7 +813,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                                               ).showSnackBar(savedSnackBar);
                                             }
                                           : null,
-                                      child: const Text("Save"),
+                                      child: Text(AppLocalizations.of(context)!.save, style: Theme.of(context).textTheme.bodyMedium,),
                                     ),
                                   ],
                                 );
@@ -813,7 +822,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                           },
                         );
                       },
-                      child: Text("Click to change!"),
+                      child: Text(AppLocalizations.of(context)!.changeLanguageButton, style: Theme.of(context).textTheme.bodyMedium,),
                     ),
                   ],
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:final_project_flutter/l10n/app_localizations.dart';
 
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({super.key});
@@ -15,26 +16,26 @@ class AppBottomNav extends StatelessWidget {
       selectedFontSize: 14,
       unselectedFontSize: 12,
 
-      items: const [
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
+          icon: const Icon(Icons.home),
+          label: AppLocalizations.of(context)!.bottomNavHome,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.volunteer_activism),
-          label: 'Volunteer',
+          icon: const Icon(Icons.volunteer_activism),
+          label: AppLocalizations.of(context)!.bottomNavVolunteer,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.qr_code_scanner_rounded),
-          label: 'QR Code',
+          icon: const Icon(Icons.qr_code_scanner_rounded),
+          label: AppLocalizations.of(context)!.bottomNavQrCode,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.menu_book_sharp),
-          label: 'EDucation',
+          icon: const Icon(Icons.menu_book_sharp),
+          label: AppLocalizations.of(context)!.bottomNavEducation,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'Donation',
+          icon: const Icon(Icons.favorite),
+          label: AppLocalizations.of(context)!.bottomNavDonation,
         ),
       ],
       onTap: (i) {

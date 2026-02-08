@@ -4,6 +4,7 @@ import 'package:final_project_flutter/components/appBar.dart';
 import 'package:final_project_flutter/components/drawer.dart';
 import 'package:final_project_flutter/components/bottomNav.dart';
 import 'donation_detail.dart';
+import 'package:final_project_flutter/l10n/app_localizations.dart';
 
 class DonationPage extends StatefulWidget {
   const DonationPage({super.key});
@@ -15,15 +16,25 @@ class DonationPage extends StatefulWidget {
 class _DonationPageState extends State<DonationPage> {
   String selectedCategory = 'All';
 
-  final categories = [
-    'All',
-    'Children',
-    'Elderly',
-    'Environment',
-    'Education',
-    'Health',
-    'Migrants',
-  ];
+  Map<String, String> get categories => {
+    'All': AppLocalizations.of(context)!.categoryAll,
+    'Children': AppLocalizations.of(context)!.categoryChildren,
+    'Elderly': AppLocalizations.of(context)!.categoryElderly,
+    'Environment': AppLocalizations.of(context)!.categoryEnvironment,
+    'Education': AppLocalizations.of(context)!.categoryEducation,
+    'Health': AppLocalizations.of(context)!.categoryHealth,
+    'Migrants': AppLocalizations.of(context)!.categoryMigrants,
+  };
+  // final categories = [
+  //   'All',
+  //   'Children',
+  //   'Elderly',
+  //   'Environment',
+  //   'Education',
+  //   'Health',
+  //   'Migrants',
+  // ];
+
 
   Stream<QuerySnapshot> _donationStream() {
     if (selectedCategory == 'All') {
@@ -52,11 +63,11 @@ class _DonationPageState extends State<DonationPage> {
   }
 
   Widget _topper() {
-    return const Padding(
-      padding: EdgeInsets.all(16),
+    return Padding(
+      padding: const EdgeInsets.all(16),
       child: Text(
-        'What would you like to support today?',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        AppLocalizations.of(context)!.donationTitle,
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
     );
   }
@@ -67,17 +78,23 @@ class _DonationPageState extends State<DonationPage> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        children: categories.map((cat) {
-          final isSelected = selectedCategory == cat;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: ChoiceChip(
-              label: Text(cat),
+        children: categories.entries.map((entry) {
+        final cat = entry.key;
+        final label = entry.value;
+        final isSelected = selectedCategory == cat;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: ChoiceChip(
+            label: Text(label),
+        // children: categories.map((cat) {
+        //   final isSelected = selectedCategory == cat;
+        //   return Padding(
+        //     padding: const EdgeInsets.symmetric(horizontal: 6),
+        //     child: ChoiceChip(
+        //       label: Text(cat),
               selected: isSelected,
               selectedColor: Colors.blueAccent,
-              labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.black,
-              ),
+              labelStyle: Theme.of(context).textTheme.titleMedium,
               onSelected: (_) {
                 setState(() => selectedCategory = cat);
               },
@@ -93,7 +110,7 @@ class _DonationPageState extends State<DonationPage> {
       stream: _donationStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return const Center(child: Text('Something went wrong'));
+          return Center(child: Text(AppLocalizations.of(context)!.donationListError));
         }
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -102,7 +119,7 @@ class _DonationPageState extends State<DonationPage> {
         final docs = snapshot.data!.docs;
 
         if (docs.isEmpty) {
-          return const Center(child: Text('No donations found'));
+          return Center(child: Text(AppLocalizations.of(context)!.donationListEmpty));
         }
 
         return ListView.builder(
@@ -140,19 +157,19 @@ class _DonationPageState extends State<DonationPage> {
             children: [
               Text(
                 data['title'],
-                style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
               Text(
                 data['description'],
+                style: Theme.of(context).textTheme.bodyMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
               Chip(
-                label: Text(data['category']),
-                backgroundColor: Colors.blue.shade100,
+                label: Text(data['category'], style: Theme.of(context).textTheme.bodyMedium,),
+                backgroundColor: (Theme.of(context).brightness == Brightness.light)?Colors.blue.shade100: Colors.deepPurpleAccent,
               ),
             ],
           ),

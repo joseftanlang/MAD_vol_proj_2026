@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 // Pages
 import 'pages/login.dart';
@@ -47,12 +49,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Train App',
-      // theme: ThemeData.light().copyWith(
-      //   textTheme: accessibilityProvider.textVariations,
-      // ),
-      // darkTheme: ThemeData.dark().copyWith(
-      //   textTheme: accessibilityProvider.textVariations,
-      // ),
+      locale: Provider.of<AccessibilityProvider>(context).language,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.light),

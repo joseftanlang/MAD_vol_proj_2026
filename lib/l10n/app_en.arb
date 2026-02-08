@@ -1,0 +1,148 @@
+{
+  "@@locale": "en",
+
+  "accessibilityEditPreference": "Edit user preference",
+  "fontSizeTitle": "Font Size (Default: 1)",
+  "currentSettings": "Current settings:",
+  "editFontSize": "Edit your font size:",
+  "exampleBody": "Example of body",
+  "noUnsavedChanges": "No unsaved changes",
+  "pressSaveChanges": "Press save to save changes!",
+
+  "previewTitle": "Title",
+  "previewSubtitle": "Subtitle",
+  "previewBodyText": "Body text",
+  "tapBoxToChange": "Tap this box to change",
+
+  "appContrast": "App contrast",
+
+  "preferredLanguage": "Preferred language:",
+  "currentLanguage": "Current: {language}",
+  "@currentLanguage": {
+    "placeholders": {
+      "language": {}
+    }
+  },
+
+  "selectLanguage": "Select a language",
+  "searchLanguage": "Search a language...",
+  "changeLanguageButton": "Click to change!",
+
+  "saveChangesDialogTitle": "Save your changes?",
+  "saveChangesDialogContent": "You have unsaved changes, return to home without saving?",
+
+  "cancel": "Cancel",
+  "save": "Save",
+  "dontSave": "Don't Save",
+
+  "savedSuccessfully": "Item saved successfully",
+  "nothingToSave": "Nothing to save!!",
+
+  "english": "English",
+  "chinese": "Chinese",
+
+  "welcomeDefault": "Welcome to SP!",
+  "welcomeBack": "Welcome back, {username}!",
+  "@welcomeBack": {
+    "placeholders": {
+      "username": {}
+    }
+  },
+
+  "welcomeLoadError": "Error loading welcome message",
+
+  "searchOpportunities": "Search for opportunities",
+
+  "noMatchingPage": "No matching page for: \"{spokenText}\"",
+  "@noMatchingPage": {
+    "placeholders": {
+      "spokenText": {}
+    }
+  },
+  "categoryVolunteer": "Volunteer",
+  "categoryTraining": "Training",
+  "categoryDonation": "Donation",
+  "categoryAboutUs": "About Us",
+  "categoryAccessibility": "Accessibility",
+  "categoryLegalService": "Legal Service",
+  "categoryQrCode": "QR Code",
+  "categoryLogout": "Log Out",
+  "categorySettings": "Settings",
+  "categoryChatbot": "Chatbot",
+  "bottomNavHome": "Home",
+  "bottomNavVolunteer": "Volunteer",
+  "bottomNavQrCode": "QR Code",
+  "bottomNavEducation": "Education",
+  "bottomNavDonation": "Donation",
+  "drawerHeader": "Navigation Menu",
+  "drawerHome": "Home",
+  "drawerAboutUs": "About Us",
+  "drawerVolunteer": "Volunteer",
+  "drawerTraining": "Training",
+  "drawerLegal": "Legal",
+  "drawerDonation": "Donation",
+  "drawerQrCode": "QR Code",
+  "drawerSettings": "Settings",
+  "drawerAccessibility": "Accessibility",
+  "drawerChatbot": "Chatbot",
+  "drawerLogout": "Log Out",
+  "drawerLocationTracker": "Location Tracker",
+  "aboutUsTitle": "About Us",
+  "aboutUsDescription": "Welcome to the Train App! We are dedicated to providing you with the best experience for all your train travel needs. Our app offers a range of features including ticket booking, real-time train schedules, and travel updates to ensure a smooth journey.",
+  "contactUsButton": "Contact Us",
+  "feedbackButton": "Feedback",
+  "callLabel": "Call: +65 88454281",
+  "emailLabel": "Email: tanjosef03@gmail.com",
+  "sendFeedbackTitle": "Send Feedback",
+  "sendFeedbackHint": "Type your feedback here...",
+  "sendButton": "Send",
+  "donationTitle": "What would you like to support today?",
+  "categoryAll": "All",
+  "categoryChildren": "Children",
+  "categoryElderly": "Elderly",
+  "categoryEnvironment": "Environment",
+  "categoryEducation": "Education",
+  "categoryHealth": "Health",
+  "categoryMigrants": "Migrants",
+  "donationListEmpty": "No donations found",
+  "donationListError": "Something went wrong",
+  "donationSelectAmount": "Select Amount",
+  "donationButtonSelectAmount": "Select an amount to continue",
+  "donationSuccessMessage": "Donation successful ❤️",
+  "settingsUploadPhoto": "Upload Photo",
+  "settingsUsername": "Username",
+  "settingsFullName": "Full Name",
+  "settingsEmail": "Email",
+  "settingsPhone": "Phone",
+  "settingsAddress": "Address",
+  "settingsBloodType": "Blood Type",
+  "settingsDateOfBirth": "Date of Birth",
+  "settingsCitizenship": "Citizenship",
+  "settingsSavedSuccess": "Settings saved successfully",
+  "settingsSaveButton": "Save",
+  "settingsLogoutButton": "Logout",
+  "volunteerImpactToday": "How would you make an impact today?",
+  "volunteerFeatured": "Featured",
+  "volunteerCategoryHeader": "Category",
+  "volunteerThankYou": "Thank you for volunteering!",
+  "urlErrorTitle": "Error",
+  "urlErrorMessage": "Error redirecting. Please try again.",
+  "trainingWhatLearnToday": "What would you like to learn today?",
+  "qrUniqueMessage": "This QR code is unique to you",
+  "qrCodeLabel": "QR Code",
+  "qrScannerLabel": "QR Scanner",
+  "scanQrButton": "Scan QR Code",
+  "qrImageButton": "QR Code Image",
+  "welcomeBack": "Welcome back, {username}!",
+  "@welcomeBack": {
+    "placeholders": {
+      "username": {}
+    }
+  },
+  "scannedResultLabel": "Scanned: {result}",
+  "@scannedResultLabel": {
+    "placeholders": {
+      "result": {}
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pay/pay.dart';
+import 'package:final_project_flutter/l10n/app_localizations.dart';
 
 class DonationDetailPage extends StatefulWidget {
   final QueryDocumentSnapshot donationData;
@@ -34,7 +35,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
     final List amounts = widget.donationData['amounts'];
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.donationData['title'])),
+      appBar: AppBar(title: Text(widget.donationData['title'], style: Theme.of(context).textTheme.titleMedium,)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -52,24 +53,21 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
 
           Text(
             widget.donationData['title'],
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
 
           const SizedBox(height: 12),
 
           Text(
             widget.donationData['description'],
-            style: const TextStyle(fontSize: 16),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
 
           const SizedBox(height: 24),
 
-          const Text(
-            'Select Amount',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            AppLocalizations.of(context)!.donationSelectAmount,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
 
           const SizedBox(height: 8),
@@ -80,6 +78,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
               final isSelected = selectedAmount == amt;
               return ChoiceChip(
                 label: Text('\$$amt'),
+                labelStyle: Theme.of(context).textTheme.bodyMedium,
                 selected: isSelected,
                 onSelected: (_) {
                   setState(() => selectedAmount = amt);
@@ -107,8 +106,8 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
                 debugPrint('Payment success: $result');
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Donation successful ❤️'),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.donationSuccessMessage),
                   ),
                 );
               },
@@ -122,7 +121,7 @@ class _DonationDetailPageState extends State<DonationDetailPage> {
           else if (selectedAmount == null)
             ElevatedButton(
               onPressed: null,
-              child: const Text('Select an amount to continue'),
+              child: Text(AppLocalizations.of(context)!.donationSelectAmount, style: Theme.of(context).textTheme.bodyMedium,),
             )
           else
             const Center(child: CircularProgressIndicator()),

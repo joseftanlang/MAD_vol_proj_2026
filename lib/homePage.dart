@@ -1,4 +1,7 @@
+import 'package:final_project_flutter/accessibility_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:final_project_flutter/l10n/app_localizations.dart';
 // import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -41,8 +44,43 @@ class _TrainAppState extends State<TrainApp> {
   void initState() {
     super.initState();
     _initSpeech();
+    syncAccessibilityWithDatabase();
   }
-
+  void syncAccessibilityWithDatabase() async {
+    if (AccessibilityProvider.accessibilitySynced) {
+      print("Info already synced!!");
+      return;
+    }
+    final user = FirebaseAuth.instance.currentUser;
+    // Used a powerful firestore method: .set() which creates if field not found and updates if field is found
+    if (user != null) {
+      try {
+        DocumentSnapshot docs = await FirebaseFirestore.instance
+            .collection('accessibility')
+            .doc(user.uid)
+            .get();
+        if (docs.exists) {
+          final data = docs.data() as Map<String, dynamic>;
+          rebuildUI(data);
+          
+          AccessibilityProvider.data = data;
+          AccessibilityProvider.accessibilitySynced = true;
+        }
+      } catch (err) {
+        print("Document not made yet!!");
+      }
+    } else {
+      print("User not logged in!!");
+    }
+  }
+  void rebuildUI(Map data){
+    final accessibility = Provider.of<AccessibilityProvider>(context, listen: false);    
+    accessibility.changeFontSize(data["fontSize"]);
+    (data["darkMode"]) ? accessibility.changeContrast(ThemeMode.dark) : accessibility.changeContrast(ThemeMode.light);
+    (data["language"] == "English") ? accessibility.changeLanguage(Locale('en')): accessibility.changeLanguage(Locale('zh'));
+    
+    return;
+  }
   Future<void> _initSpeech() async {
     _speechEnabled = await _speechToText.initialize();
     setState(() {});
@@ -104,10 +142,37 @@ class _TrainAppState extends State<TrainApp> {
       }
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No matching page for: "$spokenText"')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.noMatchingPage(spokenText), style: Theme.of(context).textTheme.bodyMedium,)),
     );
     debugPrint("No matching page for: $query");
   }
+  String _getCategoryLabel(String key) {
+    switch (key) {
+      case "Volunteer":
+        return AppLocalizations.of(context)!.categoryVolunteer;
+      case "Training":
+        return AppLocalizations.of(context)!.categoryTraining;
+      case "donation":
+        return AppLocalizations.of(context)!.categoryDonation;
+      case "aboutus":
+        return AppLocalizations.of(context)!.categoryAboutUs;
+      case "accessibility":
+        return AppLocalizations.of(context)!.categoryAccessibility;
+      case "legalservice":
+        return AppLocalizations.of(context)!.categoryLegalService;
+      case "qrcode":
+        return AppLocalizations.of(context)!.categoryQrCode;
+      case "Log Out":
+        return AppLocalizations.of(context)!.categoryLogout;
+      case "settings":
+        return AppLocalizations.of(context)!.categorySettings;
+      case "Chatbot":
+        return AppLocalizations.of(context)!.categoryChatbot;
+      default:
+        return key;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +207,7 @@ class _TrainAppState extends State<TrainApp> {
         } else if (snapshot.hasError) {
           return Padding(
             padding: const EdgeInsets.all(16),
-            child: Text('Error loading welcome message'),
+            child: Text(AppLocalizations.of(context)!.welcomeLoadError, style: Theme.of(context).textTheme.bodyMedium,),
           );
         } else {
           // snapshot.data contains your widget
@@ -160,11 +225,8 @@ class _TrainAppState extends State<TrainApp> {
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Text(
-          'Welcome to SP!',
-          style: TextStyle(
-            fontSize: Theme.of(context).textTheme.headlineMedium?.fontSize,
-            fontWeight: FontWeight.bold,
-          ),
+          AppLocalizations.of(context)!.welcomeDefault,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       );
     }
@@ -181,11 +243,8 @@ class _TrainAppState extends State<TrainApp> {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Text(
-        'Welcome back, $username!',
-        style: TextStyle(
-          fontSize: Theme.of(context).textTheme.headlineMedium?.fontSize,
-          fontWeight: FontWeight.bold,
-        ),
+        AppLocalizations.of(context)!.welcomeBack(username!),
+        style: Theme.of(context).textTheme.headlineMedium,
       ),
     );
   }
@@ -196,7 +255,8 @@ class _TrainAppState extends State<TrainApp> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Search for opportunities',
+          hintText: AppLocalizations.of(context)!.searchOpportunities,
+          hintStyle: Theme.of(context).textTheme.bodyMedium,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           prefixIcon: const Icon(Icons.search),
           suffixIcon: Row(
@@ -276,8 +336,10 @@ class _TrainAppState extends State<TrainApp> {
             },
             // icon: const Icon(Icons.help, color: Colors.white),
             label: Text(
-              categoryRoutes.keys.elementAt(startIndex + i),
-              style: const TextStyle(color: Colors.white, fontSize: 20),
+              _getCategoryLabel(categoryRoutes.keys.elementAt(startIndex + i)),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.white
+              ),
             ),
             style: ElevatedButton.styleFrom(
               fixedSize: const Size(130, 130),
