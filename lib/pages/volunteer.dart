@@ -47,15 +47,18 @@ class _VolunteerPageState extends State<VolunteerPage> {
     required String collectionToLookup,
     required String selectedCategory,
   }) {
+    final now = Timestamp.now();
     if (selectedCategory == 'All') {
       return FirebaseFirestore.instance
           .collection(collectionToLookup)
+          .where('startTime', isGreaterThanOrEqualTo: now)
           .orderBy('startTime')
           .snapshots();
     }
     return FirebaseFirestore.instance
         .collection(collectionToLookup)
         .where('category', isEqualTo: selectedCategory)
+        .where('startTime', isGreaterThanOrEqualTo: now)
         .orderBy('startTime')
         .snapshots();
   }
