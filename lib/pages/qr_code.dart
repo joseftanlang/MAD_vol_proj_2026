@@ -6,15 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import "package:qr_flutter/qr_flutter.dart";
 
 // this is for the component files we have created
 import 'package:final_project_flutter/components/bottomNav.dart';
 import 'package:final_project_flutter/components/drawer.dart';
 import 'package:final_project_flutter/components/appBar.dart';
-
-// imported page
-import 'package:final_project_flutter/pages/settings.dart';
 
 class QRCodePage extends StatefulWidget {
   const QRCodePage({super.key});
