@@ -47,15 +47,18 @@ class _VolunteerPageState extends State<VolunteerPage> {
     required String collectionToLookup,
     required String selectedCategory,
   }) {
+    final now = Timestamp.now();
     if (selectedCategory == 'All') {
       return FirebaseFirestore.instance
           .collection(collectionToLookup)
+          .where('startTime', isGreaterThanOrEqualTo: now)
           .orderBy('startTime')
           .snapshots();
     }
     return FirebaseFirestore.instance
         .collection(collectionToLookup)
         .where('category', isEqualTo: selectedCategory)
+        .where('startTime', isGreaterThanOrEqualTo: now)
         .orderBy('startTime')
         .snapshots();
   }
@@ -70,45 +73,17 @@ class _VolunteerPageState extends State<VolunteerPage> {
         .snapshots();
   }
 
-  final List<Map<String, dynamic>> allEvents = [
-    {
-      "title": "SP Cares",
-      "description":
-          "More than 4,100 SP freshmen planted 700 trees across six sites from 15 to 17 April 2025. This event cements the Polytechnic's deep commitment to sustainability.",
-      "imagePath": "assets/sp-cares-grp.jpeg",
-      "signupLink":
-          "https://www.sp.edu.sg/student-life/programmes/service-learning",
-      "category": "Environmental",
-      "startTime": DateTime(2025, 12, 1, 12, 00),
-      "endTime": DateTime(2025, 12, 1, 12, 00),
-      "venue": "myAddress",
-      "featured": true,
-    },
-    {
-      "title": "myTitle",
-      "description": "myDescription",
-      "imagePath": "myImagePath",
-      "signupLink":
-          "https://www.sp.edu.sg/student-life/programmes/service-learning",
-      "category": "Low Income",
-      "startTime": DateTime(2025, 12, 1, 12, 00),
-      "endTime": DateTime(2025, 12, 1, 12, 00),
-      "venue": "myAddress",
-      "featured": true,
-    },
-    {
-      "title": "myTitle",
-      "description": "myDescription",
-      "imagePath": "myImagePath",
-      "signupLink":
-          "https://www.sp.edu.sg/student-life/programmes/service-learning",
-      "category": "Healthcare",
-      "startTime": DateTime(2025, 12, 1, 12, 00),
-      "endTime": DateTime(2025, 12, 1, 12, 00),
-      "venue": "myAddress",
-      "featured": true,
-    },
-  ];
+  Stream<QuerySnapshot> _filterPastEvents({
+    required String collectionToLookup,
+  }) {
+    final now = Timestamp.now();
+
+    return FirebaseFirestore.instance
+        .collection(collectionToLookup)
+        .where('startTime', isLessThan: now)
+        .orderBy('startTime', descending: true)
+        .snapshots();
+  }
 
   TextStyle tabTextStyle(BuildContext context) {
     return Theme.of(context).textTheme.titleLarge!;
@@ -176,7 +151,8 @@ class _VolunteerPageState extends State<VolunteerPage> {
       // image of event
       child: SizedBox(
         height: imageHeight,
-        child: Image(image: AssetImage(imagePath), fit: BoxFit.cover),
+        child: Image.network(imagePath, fit: BoxFit.cover),
+        // child: Image(image: AssetImage(imagePath), fit: BoxFit.cover),
       ),
     );
   }
@@ -451,7 +427,7 @@ class _VolunteerPageState extends State<VolunteerPage> {
                           child: StreamBuilder<QuerySnapshot>(
                             stream: _filterEvents(
                               collectionToLookup:
-                                  myPageCollection, // your Firestore collection name
+                                  myPageCollection,
                               selectedCategory: selectedCategory,
                             ),
                             builder: (context, snapshot) {
@@ -528,28 +504,56 @@ class _VolunteerPageState extends State<VolunteerPage> {
                           SizedBox(height: 10),
 
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              children: allEvents.map((value) {
-                                final card = _buildCard(
-                                  myTitle: value["title"] ?? "Untitled Event",
-                                  myDescription:
-                                      value["description"] ??
-                                      "Event Description",
-                                  mySignupLink: value["signupLink"] ?? "",
-                                  myCategory: value["category"] ?? "All",
-                                );
-
-                                if (value == allEvents.last) {
-                                  return card;
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: _filterPastEvents(
+                                collectionToLookup:
+                                    myPageCollection, // your Firestore collection name
+                              ),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
                                 }
 
-                                return Container(
-                                  child: Column(
-                                    children: [SizedBox(height: 20), card],
-                                  ),
+                                if (snapshot.hasError) {
+                                  return const Text("Something went wrong");
+                                }
+
+                                if (!snapshot.hasData) {
+                                  return const Text("No data yet");
+                                }
+
+                                if (snapshot.data!.docs.isEmpty) {
+                                  return const Text("No events found");
+                                }
+                                final docs = snapshot.data!.docs;
+
+                                return Column(
+                                  children: docs.map((doc) {
+                                    final data =
+                                        doc.data() as Map<String, dynamic>;
+
+                                    return Column(
+                                      children: [
+                                        _buildCard(
+                                          myTitle:
+                                              data["title"] ?? "Untitled Event",
+                                          myDescription:
+                                              data["description"] ??
+                                              "Event Description",
+                                          mySignupLink:
+                                              data["signupLink"] ?? "",
+                                          myCategory: data["category"] ?? "All",
+                                        ),
+                                        const SizedBox(height: 20),
+                                      ],
+                                    );
+                                  }).toList(),
                                 );
-                              }).toList(),
+                              },
                             ),
                           ),
 
