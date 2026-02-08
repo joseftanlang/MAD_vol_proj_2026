@@ -176,7 +176,7 @@ class _VolunteerPageState extends State<VolunteerPage> {
       // image of event
       child: SizedBox(
         height: imageHeight,
-        child: Image(image: AssetImage(imagePath), fit: BoxFit.cover),
+        child: Image.network(imagePath, fit: BoxFit.cover),
       ),
     );
   }
@@ -347,16 +347,7 @@ class _VolunteerPageState extends State<VolunteerPage> {
                               if (snapshot.data!.docs.isEmpty) {
                                 return const Text("No events found");
                               }
-
-                              debugPrint("hasData: ${snapshot.hasData}");
-                              debugPrint(
-                                "connectionState: ${snapshot.connectionState}",
-                              );
-                              debugPrint("hasError: ${snapshot.hasError}");
-                              debugPrint(
-                                "docs length: ${snapshot.data?.docs.length}",
-                              );
-
+                            
                               final docs = snapshot.data!.docs;
 
                               return SingleChildScrollView(
