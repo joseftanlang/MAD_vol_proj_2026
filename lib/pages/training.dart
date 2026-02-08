@@ -17,14 +17,13 @@ class TrainingPage extends StatefulWidget {
 }
 
 class _TrainingPageState extends State<TrainingPage> {
-
   double imageHeight = 200;
 
   Map<String, Color> trainingTabs = {
-    "Physical": Colors.redAccent,
-    'Online': Colors.lightBlueAccent,
+    "Online": Colors.redAccent,
+    'Physical': Colors.lightBlueAccent,
   };
-  
+
   /* ───────────────────────── FIRESTORE DATA ───────────────────────── */
   final List<String> trainingCategory = [
     "All",
@@ -37,50 +36,42 @@ class _TrainingPageState extends State<TrainingPage> {
   ];
 
   String selectedCategory = "All";
-  String myPageCollection = "TrainingEvent";
+  String myPageCollection = "trainingEvent";
 
   /* ───────────────────────── FIRESTORE DATA ───────────────────────── */
 
-  Stream<QuerySnapshot> _upcomingEvents({
+  Stream<QuerySnapshot> _filterOnlineEvents({
     required String collectionToLookup,
     required String selectedCategory,
   }) {
-    final now = Timestamp.now();
-
-    Query query = FirebaseFirestore.instance
-        .collection(collectionToLookup)
-        .where('startTime', isGreaterThanOrEqualTo: now)
-        .orderBy('startTime');
-
-    if (selectedCategory != 'All') {
-      query = query.where('category', isEqualTo: selectedCategory);
+    if (selectedCategory == 'All') {
+      return FirebaseFirestore.instance
+          .collection(collectionToLookup)
+          .where('venue', isNotEqualTo: "Online")
+          .snapshots();
     }
-
-    return query.snapshots();
-  }
-
-  Stream<QuerySnapshot> _pastEvents({required String collectionToLookup}) {
-    final now = Timestamp.now();
-
     return FirebaseFirestore.instance
         .collection(collectionToLookup)
-        .where('startTime', isLessThan: now)
-        .orderBy('startTime', descending: true)
+        .where('category', isEqualTo: selectedCategory)
+        .where('venue', isNotEqualTo: "Online")
         .snapshots();
   }
 
-  Stream<QuerySnapshot> _filterFeaturedEvents({
+  Stream<QuerySnapshot> _filterPhysicalEvents({
     required String collectionToLookup,
+    required String selectedCategory,
   }) {
-    final now = Timestamp.now();
-
-    Query query = FirebaseFirestore.instance
+    if (selectedCategory == 'All') {
+      return FirebaseFirestore.instance
+          .collection(collectionToLookup)
+          .where('venue', isEqualTo: "Online")
+          .snapshots();
+    }
+    return FirebaseFirestore.instance
         .collection(collectionToLookup)
-        .where('startTime', isGreaterThanOrEqualTo: now)
-        .where('featured', isEqualTo: true)
-        .orderBy('startTime');
-
-    return query.snapshots();
+        .where('category', isEqualTo: selectedCategory)
+        .where('venue', isEqualTo: "Online")
+        .snapshots();
   }
 
   TextStyle tabTextStyle(BuildContext context) {
@@ -149,8 +140,7 @@ class _TrainingPageState extends State<TrainingPage> {
       // image of event
       child: SizedBox(
         height: imageHeight,
-        child: Image.network(imagePath, fit:BoxFit.cover),
-        // NetworkImage(imagePath, : BoxFit.cover)
+        child: Image.network(imagePath, fit: BoxFit.cover),
       ),
     );
   }
@@ -250,7 +240,7 @@ class _TrainingPageState extends State<TrainingPage> {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                "How would you make an impact today?",
+                "What would you like to learn today?",
                 style: TextStyle(
                   fontSize: 35.0,
                   fontWeight: FontWeight.bold,
@@ -277,7 +267,7 @@ class _TrainingPageState extends State<TrainingPage> {
               ),
 
               children: [
-                /* ───────────────────────── Upcoming ───────────────────────── */
+                /* ───────────────────────── Online ───────────────────────── */
                 Padding(
                   padding: EdgeInsets.all(15),
 
@@ -291,82 +281,6 @@ class _TrainingPageState extends State<TrainingPage> {
 
                     child: Column(
                       children: [
-                        _buildHeader(headerText: "Featured"),
-
-                        SizedBox(height: 10),
-
-                        // Featured events
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: StreamBuilder<QuerySnapshot>(
-                            stream: _filterFeaturedEvents(
-                              collectionToLookup: myPageCollection,
-                            ),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-
-                              if (snapshot.hasError) {
-                                return const Text("Something went wrong");
-                              }
-
-                              if (!snapshot.hasData) {
-                                return const Text("No data yet");
-                              }
-
-                              if (snapshot.data!.docs.isEmpty) {
-                                return const Text("No events found");
-                              }
-
-                              debugPrint("hasData: ${snapshot.hasData}");
-                              debugPrint(
-                                "connectionState: ${snapshot.connectionState}",
-                              );
-                              debugPrint("hasError: ${snapshot.hasError}");
-                              debugPrint(
-                                "docs length: ${snapshot.data?.docs.length}",
-                              );
-
-                              final docs = snapshot.data!.docs;
-
-                              return SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: docs.map((doc) {
-                                    final data =
-                                        doc.data() as Map<String, dynamic>;
-
-                                    return Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: _buildFeatured(
-                                        myTitle:
-                                            data["title"] ?? "Untitled Event",
-                                        myDescription:
-                                            data["description"] ??
-                                            "Event Description",
-                                        imagePath:
-                                            data["imagePath"] ??
-                                            "assets/Singapore_poly.png",
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-
-                        Divider(
-                          color: Colors.black,
-                          thickness: 1.5,
-                          height:
-                              40, // Total height of the box containing the line
-                        ),
-
                         _buildHeader(headerText: "Category"),
 
                         SizedBox(height: 10),
@@ -419,11 +333,11 @@ class _TrainingPageState extends State<TrainingPage> {
 
                         SizedBox(height: 15),
 
-                        // all events
+                        // online events
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child: StreamBuilder<QuerySnapshot>(
-                            stream: _upcomingEvents(
+                            stream: _filterOnlineEvents(
                               collectionToLookup:
                                   myPageCollection, // your Firestore collection name
                               selectedCategory: selectedCategory,
@@ -495,37 +409,109 @@ class _TrainingPageState extends State<TrainingPage> {
 
                       child: Column(
                         children: [
-                          _buildHeader(
-                            headerText: "Thank you for volunteering!",
+                          // category buttons
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: List.generate(trainingCategory.length, (
+                                index,
+                              ) {
+                                final item = trainingCategory[index];
+
+                                if (index == trainingCategory.length - 1) {
+                                  return FilledButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedCategory = item;
+                                      });
+                                    },
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor:
+                                          ((selectedCategory == item)
+                                          ? Colors.blue
+                                          : Colors.grey),
+                                    ),
+                                    child: Text(item),
+                                  );
+                                } else {
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 20),
+                                    child: FilledButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedCategory = item;
+                                        });
+                                      },
+                                      style: FilledButton.styleFrom(
+                                        backgroundColor:
+                                            ((selectedCategory == item)
+                                            ? Colors.blue
+                                            : Colors.grey),
+                                      ),
+                                      child: Text(item),
+                                    ),
+                                  );
+                                }
+                              }),
+                            ),
                           ),
 
-                          SizedBox(height: 10),
+                          SizedBox(height: 15),
 
+                          // online events
                           Container(
-                            child: Text("Hello")
-                            // padding: const EdgeInsets.symmetric(horizontal: 15),
-                            // child: Column(
-                            //   children: _pastEvents.map((value) {
-                            //     final card = _buildCard(
-                            //       myTitle: value["title"] ?? "Untitled Event",
-                            //       myDescription:
-                            //           value["description"] ??
-                            //           "Event Description",
-                            //       mySignupLink: value["signupLink"] ?? "",
-                            //       myCategory: value["category"] ?? "All",
-                            //     );
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: _filterPhysicalEvents(
+                                collectionToLookup:
+                                    myPageCollection, // your Firestore collection name
+                                selectedCategory: selectedCategory,
+                              ),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
 
-                            //     if (value == _pastEvents.last) {
-                            //       return card;
-                            //     }
+                                if (snapshot.hasError) {
+                                  return const Text("Something went wrong");
+                                }
 
-                            //     return Container(
-                            //       child: Column(
-                            //         children: [SizedBox(height: 20), card],
-                            //       ),
-                            //     );
-                            //   }).toList(),
-                            // ),
+                                if (!snapshot.hasData) {
+                                  return const Text("No data yet");
+                                }
+
+                                if (snapshot.data!.docs.isEmpty) {
+                                  return const Text("No events found");
+                                }
+                                final docs = snapshot.data!.docs;
+
+                                return Column(
+                                  children: docs.map((doc) {
+                                    final data =
+                                        doc.data() as Map<String, dynamic>;
+
+                                    return Column(
+                                      children: [
+                                        _buildCard(
+                                          myTitle:
+                                              data["title"] ?? "Untitled Event",
+                                          myDescription:
+                                              data["description"] ??
+                                              "Event Description",
+                                          mySignupLink:
+                                              data["signupLink"] ?? "",
+                                          myCategory: data["category"] ?? "All",
+                                        ),
+                                        const SizedBox(height: 20),
+                                      ],
+                                    );
+                                  }).toList(),
+                                );
+                              },
+                            ),
                           ),
 
                           SizedBox(height: 5),
