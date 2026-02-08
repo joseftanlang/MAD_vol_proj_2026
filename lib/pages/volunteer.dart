@@ -70,45 +70,17 @@ class _VolunteerPageState extends State<VolunteerPage> {
         .snapshots();
   }
 
-  final List<Map<String, dynamic>> allEvents = [
-    {
-      "title": "SP Cares",
-      "description":
-          "More than 4,100 SP freshmen planted 700 trees across six sites from 15 to 17 April 2025. This event cements the Polytechnic's deep commitment to sustainability.",
-      "imagePath": "assets/sp-cares-grp.jpeg",
-      "signupLink":
-          "https://www.sp.edu.sg/student-life/programmes/service-learning",
-      "category": "Environmental",
-      "startTime": DateTime(2025, 12, 1, 12, 00),
-      "endTime": DateTime(2025, 12, 1, 12, 00),
-      "venue": "myAddress",
-      "featured": true,
-    },
-    {
-      "title": "myTitle",
-      "description": "myDescription",
-      "imagePath": "myImagePath",
-      "signupLink":
-          "https://www.sp.edu.sg/student-life/programmes/service-learning",
-      "category": "Low Income",
-      "startTime": DateTime(2025, 12, 1, 12, 00),
-      "endTime": DateTime(2025, 12, 1, 12, 00),
-      "venue": "myAddress",
-      "featured": true,
-    },
-    {
-      "title": "myTitle",
-      "description": "myDescription",
-      "imagePath": "myImagePath",
-      "signupLink":
-          "https://www.sp.edu.sg/student-life/programmes/service-learning",
-      "category": "Healthcare",
-      "startTime": DateTime(2025, 12, 1, 12, 00),
-      "endTime": DateTime(2025, 12, 1, 12, 00),
-      "venue": "myAddress",
-      "featured": true,
-    },
-  ];
+  Stream<QuerySnapshot> _filterPastEvents({
+    required String collectionToLookup,
+  }) {
+    final now = Timestamp.now();
+
+    return FirebaseFirestore.instance
+        .collection(collectionToLookup)
+        .where('startTime', isLessThan: now)
+        .orderBy('startTime', descending: true)
+        .snapshots();
+  }
 
   TextStyle tabTextStyle(BuildContext context) {
     return Theme.of(context).textTheme.titleLarge!;
