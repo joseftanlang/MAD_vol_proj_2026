@@ -442,7 +442,7 @@ class _VolunteerPageState extends State<VolunteerPage> {
                           child: StreamBuilder<QuerySnapshot>(
                             stream: _filterEvents(
                               collectionToLookup:
-                                  myPageCollection, // your Firestore collection name
+                                  myPageCollection,
                               selectedCategory: selectedCategory,
                             ),
                             builder: (context, snapshot) {
@@ -519,28 +519,56 @@ class _VolunteerPageState extends State<VolunteerPage> {
                           SizedBox(height: 10),
 
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              children: allEvents.map((value) {
-                                final card = _buildCard(
-                                  myTitle: value["title"] ?? "Untitled Event",
-                                  myDescription:
-                                      value["description"] ??
-                                      "Event Description",
-                                  mySignupLink: value["signupLink"] ?? "",
-                                  myCategory: value["category"] ?? "All",
-                                );
-
-                                if (value == allEvents.last) {
-                                  return card;
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: StreamBuilder<QuerySnapshot>(
+                              stream: _filterPastEvents(
+                                collectionToLookup:
+                                    myPageCollection, // your Firestore collection name
+                              ),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
                                 }
 
-                                return Container(
-                                  child: Column(
-                                    children: [SizedBox(height: 20), card],
-                                  ),
+                                if (snapshot.hasError) {
+                                  return const Text("Something went wrong");
+                                }
+
+                                if (!snapshot.hasData) {
+                                  return const Text("No data yet");
+                                }
+
+                                if (snapshot.data!.docs.isEmpty) {
+                                  return const Text("No events found");
+                                }
+                                final docs = snapshot.data!.docs;
+
+                                return Column(
+                                  children: docs.map((doc) {
+                                    final data =
+                                        doc.data() as Map<String, dynamic>;
+
+                                    return Column(
+                                      children: [
+                                        _buildCard(
+                                          myTitle:
+                                              data["title"] ?? "Untitled Event",
+                                          myDescription:
+                                              data["description"] ??
+                                              "Event Description",
+                                          mySignupLink:
+                                              data["signupLink"] ?? "",
+                                          myCategory: data["category"] ?? "All",
+                                        ),
+                                        const SizedBox(height: 20),
+                                      ],
+                                    );
+                                  }).toList(),
                                 );
-                              }).toList(),
+                              },
                             ),
                           ),
 
@@ -553,8 +581,6 @@ class _VolunteerPageState extends State<VolunteerPage> {
               ],
             ),
           ),
-
-          // Container(child: ColoredBox(color: Colors.red), height: 500),
         ],
       ),
     );
