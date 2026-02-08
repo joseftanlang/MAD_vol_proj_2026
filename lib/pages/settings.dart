@@ -32,6 +32,16 @@ class _SettingPageState extends State<SettingPage> {
     loadSettings();
   }
 
+  void _returnUserData() {
+  Navigator.pop(context, {
+    'username': usernameController.text,
+    'name': nameController.text,
+    'email': emailController.text,
+    "dob": dobController.text,
+    "citizenship":citizenshipController.text,
+  });
+}
+
   Future<void> loadSettings() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -88,6 +98,9 @@ class _SettingPageState extends State<SettingPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Settings saved successfully')),
     );
+
+    // Return username to previous page
+    _returnUserData();
   }
 
   Future<void> logout() async {
